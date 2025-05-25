@@ -1,0 +1,12 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+
+.course-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.course-card:hover {
+  transform: scale(1.03);
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Course Details</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <a href="index.html" class="text-white">&larr; Back</a>
+    <h1 class="text-2xl font-bold">Loading...</h1>
+  </header>
+
+  <main class="p-6 space-y-6">
+    <div class="aspect-w-16 aspect-h-9">
+      <iframe class="w-full h-96 rounded-lg shadow" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Your Progress</h2>
+      <div class="w-full bg-gray-200 rounded-full h-4">
+        <div class="bg-green-500 h-4 rounded-full" style="width: 40%;" id="progress-bar"></div>
+      </div>
+      <p class="text-sm mt-1 text-gray-600" id="progress-text">40% completed</p>
+    </div>
+
+
+    <button onclick="markProgress()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Mark Lesson as Complete</button>
+  </main>
+
+  <script>
+    const courses = {
+      webdev: {
+        title: "Web Development Basics",
+        video: "https://www.youtube.com/embed/dD2EISBDjWM"
+      },
+      python: {
+        title: "Python Programming",
+        video: "https://www.youtube.com/embed/_uQrJ0TkZlc"
+      },
+      uiux: {
+        title: "UI/UX Design Fundamentals",
+        video: "https://www.youtube.com/embed/BU_afT-aIn0?si=U7e7uJuISfd1_tzR"
+      },
+      dsa: {
+        title: "Data Structures & Algorithms",
+        video: "https://www.youtube.com/embed/8hly31xKli0"
+      },
+      react: {
+        title: "React JS Essentials",
+        video: "https://www.youtube.com/embed/Ke90Tje7VS0"
+      }
+    };
+
+    
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+
+    function markProgress() {
+      const progressBar = document.getElementById("progress-bar");
+      const progressText = document.getElementById("progress-text");
+      let width = parseInt(progressBar.style.width) || 40;
+      if (width < 100) {
+        width += 20;
+        progressBar.style.width = width + "%";
+        progressText.textContent = width + "% completed";
+
+        const courseKey = getQueryParam("course");
+        if(courseKey) {
+          localStorage.setItem(`progress_${courseKey}`, width);
+        }
+      } else {
+        alert("Course already completed!");
+      }
+    }
+
+    window.onload = () => {
+      const courseKey = getQueryParam("course");
+      const headerTitle = document.querySelector("header h1");
+      const iframe = document.querySelector("iframe");
+      const progressBar = document.getElementById("progress-bar");
+      const progressText = document.getElementById("progress-text");
+
+      if (courseKey && courses[courseKey]) {
+        const course = courses[courseKey];
+        headerTitle.textContent = course.title;
+        iframe.src = course.video;
+
+        let savedProgress = parseInt(localStorage.getItem(`progress_${courseKey}`));
+        if (!savedProgress || savedProgress < 40) {
+          savedProgress = 40;
+        }
+        progressBar.style.width = savedProgress + "%";
+        progressText.textContent = savedProgress + "% completed";
+      } else {
+        headerTitle.textContent = "Course Not Found";
+        iframe.src = "";
+        alert("Course not found. Redirecting to home.");
+        window.location.href = "index.html";
+      }
+    };
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
